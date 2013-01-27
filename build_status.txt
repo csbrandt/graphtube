@@ -1,0 +1,36 @@
+Buildfile: /home/csbrandt/projects/graphtube/build.xml
+
+loadProperties:
+     [echo] Finished
+
+init:
+   [delete] Deleting directory /home/csbrandt/projects/graphtube/build
+    [mkdir] Created dir: /home/csbrandt/projects/graphtube/build
+     [copy] Copying 451 files to /home/csbrandt/projects/graphtube/build
+     [copy] Copied 82 empty directories to 1 empty directory under /home/csbrandt/projects/graphtube/build
+     [echo] Finished
+
+jsConcat:
+     [echo] Finished
+
+jsHinter:
+   [jsHint] Using options: onecase=true,jquery=true,undef=true,eqeqeq=true,smarttabs=true,browser=true,devel=true,strict=false,curly=true,shadow=true
+   [jsHint] Validating files in /home/csbrandt/projects/graphtube/js
+   [jsHint] 
+   [jsHint] 1  JS files passed JSHint code checks
+     [echo] Finished
+
+closureCompile:
+[closureCompiler] Compiling 1 file(s) with 40 extern(s)
+[closureCompiler] 0 error(s), 0 warning(s)
+     [echo] Finished
+
+cssMinify:
+[yuicompress] style.css:/home/csbrandt/projects/graphtube/build
+[yuicompress] Compressing /home/csbrandt/projects/graphtube/css/style.css to /home/csbrandt/projects/graphtube/build/style.css
+     [echo] Finished
+
+build:
+
+BUILD SUCCESSFUL
+Total time: 10 seconds

@@ -1,0 +1,9 @@
+Buildfile: /home/csbrandt/projects/graphtube/build.xml
+
+loadProperties:
+     [echo] Finished
+
+init:
+   [delete] Deleting directory /home/csbrandt/projects/graphtube/build
+    [mkdir] Created dir: /home/csbrandt/projects/graphtube/build
+     [copy] Copying 451 files to /home/csbrandt/projects/graphtube/build

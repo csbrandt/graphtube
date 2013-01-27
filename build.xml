@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="graphtube" default="build" basedir=".">
+
+  <description>
+    Build
+  </description>
+  
+  <!--Build tools directory-->
+  <property name="build.tools.dir" value="${basedir}/build_tools"/>
+  <!-- rhino dir -->
+  <property name="rhino.dir" value="${build.tools.dir}/jannon-jsdoc/lib"/>
+  
+  <path id="yuicompressor.classpath">
+     <fileset dir="${build.tools.dir}">
+        <include name="yuicompressor-2.4.7.jar"/>
+        <include name="YUIAnt.jar"/>
+     </fileset>
+  </path>
+  
+  <taskdef name="closureCompiler" classname="com.google.javascript.jscomp.ant.CompileTask"
+           classpath="${build.tools.dir}/compiler.jar"/>
+  <taskdef name="jsHint" classname="com.philmander.ant.JsHintAntTask"
+           classpath="${build.tools.dir}/ant-jshint-0.2.1-deps.jar" />
+  <taskdef name="yuicompress" classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+     <classpath>
+        <path refid="yuicompressor.classpath" />
+     </classpath>
+  </taskdef>  
+  
+  <target name="loadProperties" description="Set properties for this build">
+    <!--Base source dir-->
+     <property name="src.dir" value="${basedir}"/>
+    <!--Source JS dir-->
+     <property name="src.js.dir" value="${src.dir}/js"/>
+     <!--Source CSS dir-->
+     <property name="src.css.dir" value="${src.dir}/css"/>
+     <!--Output dir-->
+     <property name="build.dir" value="build"/>
+
+     <echo>Finished</echo>
+  </target>
+  
+  <!--Create build directories-->
+  <target name="init" depends="loadProperties" description="Create build directory structure">
+    <!--Create the time stamp for the new build-->
+     <tstamp>
+       <format property="TODAY" pattern="EEE, d MMM yyyy HH:mm:ss Z"/>
+     </tstamp>
+     
+     <!--Delete previous build files-->
+     <delete dir="${build.dir}"/>
+     <!--Recreate the build directories-->
+     <mkdir dir="${build.dir}"/>
+     <!--Copy directories to build-->
+     <copy todir="${build.dir}">
+       <fileset dir="${src.dir}">
+         <exclude name="js/**" />
+         <exclude name="css/**" />
+       </fileset>
+     </copy>
+     <echo>Finished</echo>
+  </target>
+
+  <!--Concatenate JS files-->
+  <target name="jsConcat" depends="init">
+    <concat destfile="${src.js.dir}/graphtube.concat.js">
+      <filelist id="source.files.js" dir="${src.js.dir}">
+
+        <file name="graphtube.js" />
+        <file name="graphtube.data.js" />
+        <file name="graphtube.app.js" />
+        <file name="main.js" />
+
+      </filelist>
+    </concat>
+    <echo>Finished</echo>
+  </target>
+  
+  <!--jsHint-->
+  <target name="jsHinter" depends="jsConcat">
+    <jsHint dir="${src.js.dir}" fail="true" options="browser=true,jquery=true,strict=false,undef=true,curly=true,eqeqeq=true,smarttabs=true,shadow=true,onecase=true,devel=true">
+       <include name="*.concat.js" />
+    </jsHint>
+    <echo>Finished</echo>
+  </target>
+  
+  <!--Compile-->
+  <target name="closureCompile" depends="jsHinter">
+    <closureCompiler compilationLevel="simple" warning="quiet" debug="false" output="${build.dir}/graphtube.min.js">
+      <sources dir="${src.js.dir}">
+          <file name="graphtube.concat.js" />
+        </sources>
+    </closureCompiler>
+
+    <echo>Finished</echo>
+  </target>
+  
+  <!--CSS Minification-->
+  <target name="cssMinify" depends="closureCompile">
+    <yuicompress linebreak="8000" warn="false" munge="no" preserveallsemicolons="true"
+         outputfolder="${build.dir}">
+         <fileset dir="${src.css.dir}">
+             <include name="**/*.css" />
+        </fileset>
+    </yuicompress>
+
+    <echo>Finished</echo>
+  </target>
+ 
+  <!--Build-->
+  <target name="build" 
+  description="Builds project files for production use"
+  depends="loadProperties,
+           init,
+           jsConcat,
+           jsHinter,
+           closureCompile,
+           cssMinify">
+  </target>
+
+</project>
